@@ -435,6 +435,8 @@ TODO: Naming. We are not the first with this semi-funny idea...
 Some helper functions to load required assets, if not already bundled in your main layout:
 
 ```twig
+{{ laracraft.vite() }}
+{{ laracraft.vite(['resources/css/app.css', 'resources/js/app.ts']) }}
 {{ laracraft.livewireStyles() }}
 {{ laracraft.livewireScripts() }}
 {{ laracraft.fluxAppearance() }}
