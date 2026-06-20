@@ -2,12 +2,15 @@
 
 Helper plugin for Craft 6, using Blade templates for rendering.
 
-Coming from Laravel, you may prefer using Blade templates for rendering your views. This plugin aims to bring some missing things from Twig to Blade.
+Coming from Laravel, you may prefer using Blade templates for rendering your views. 
 
 * Familiar syntax for Laravel developers.
 * Avoid the mental load of switching between Twig and Blade syntax.
 * Use Laravel's component system for reusable UI elements.
 * Leverage Laravel's advanced packages like Livewire and Flux.
+* Reuse existing custom component libraries.
+
+This plugin aims to bring some missing things from Twig to Blade.
 
 ## Disclaimer
 
@@ -19,7 +22,7 @@ Currently, you need to clone this repository into a local directory.
 
 TODO: Add installation instructions for installing from GitHub.
 
-Example: `composer.json'
+Example: `composer.json`
 
 ```json
 {
@@ -57,7 +60,7 @@ This is supported by Craft 6 natively.
 
 In the sections site settings, enter a template path to the Blade view as you would for Twig, but with the `.blade.php` extension. For example: `.../entry.blade.php`.
 
-Craft will render the view with an `$entry` variable available, which is the current entry being viewed.
+Craft will render the view with an `$entry` variable available.
 
 > Bug or feature: Craft obviously ignores a `.blade.php` or `.twig` extension when resolving templates. So you cannot have both `entry.twig` and `entry.blade.php` in the same directory.
 
@@ -104,7 +107,7 @@ Route::get('/actions/demo/show', [DemoController::class, 'show'])
 
 The `actions` prefix must match the `actionTrigger()` setting in your Craft general configuration.
 
-Enter the route in the sections site settings, for example: `route:demo/show`.
+Enter the route in the sections site settings, for example: `action:demo/show`.
 
 ### Manual route
 
