@@ -398,6 +398,8 @@ Block template example `blocks/text.blade.php`:
 </div>
 ```
 
+> Craft's rendering of matrix fields via twig templates also works: {{ $entry->contentBuilder->render() }}.
+
 ## Using Blade functionality from Twig
 
 Bringing some Blade functionality to Twig.
