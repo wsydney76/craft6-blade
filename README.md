@@ -293,7 +293,7 @@ TODO: Check examples if output is correctly escaped.
 - `truncate(string $string, int $length, string $suffix = '…', bool $splitSingleWord = true): string`
 - `asDate($date, $format = 'short'): string`
 - `asDateTime($date, $format = 'short'): string`
-- `asDateTimeLong($date): string`
+- `asRelativeTime(mixed $value): string`
 - `t(string $text, array $parameters = [], ?string $category = 'site', ?string $locale = null): string`
 - `trans_choice($key, $number, array $replace = [], $locale = null)` :string
 - `renderTwig($template, array $data = [], ?TemplateMode $templateMode = null): HtmlString`
@@ -361,6 +361,17 @@ Uses `CraftCms\Cms\Translation\Formatter` under the hood.
 {{ asDateTime($entry->postDate) }}
 {{ asDateTime($entry->postDate, 'long') }}
 ```
+
+### `asRelativeTime()`
+
+Convert a date/time value to a human-readable relative time string (e.g., "5 minutes ago", "in 2 hours").
+
+```blade
+{{ asRelativeTime($entry->postDate) }}
+{{ asRelativeTime('2026-05-01') }}
+```
+
+> Note: Craft 5 had a `craft.app.formatter.asRelativeTime()` method, but it seems to be missing in Craft 6, so for now this uses Carbon's `diffForHumans()` method, which may or may not have slight differences in behavior.
 
 ### `t()`
 

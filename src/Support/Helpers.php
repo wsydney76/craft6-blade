@@ -29,7 +29,7 @@ if (!function_exists('bladeTextExtension')) {
 if (!function_exists('sanitize')) {
     function sanitize(HtmlString|string $html): HtmlString
     {
-        return new HtmlString(HtmlSanitizers::sanitize((string) $html));
+        return new HtmlString(HtmlSanitizers::sanitize((string)$html));
     }
 }
 
@@ -52,7 +52,8 @@ if (!function_exists('truncate')) {
     /**
      * Truncate a string.
      */
-    function truncate(string $string, int $length, string $suffix = '…', bool $splitSingleWord = true): string {
+    function truncate(string $string, int $length, string $suffix = '…', bool $splitSingleWord = true): string
+    {
         return bladeTextExtension()->truncateFilter($string, $length, $suffix, $splitSingleWord);
     }
 }
@@ -61,8 +62,9 @@ if (!function_exists('asDate')) {
     /**
      * Format a date
      */
-    function asDate($date, $format = 'short'): string {
-        return new Formatter()->asDate($date,$format);
+    function asDate($date, $format = 'short'): string
+    {
+        return new Formatter()->asDate($date, $format);
     }
 }
 
@@ -70,11 +72,21 @@ if (!function_exists('asDateTime')) {
     /**
      * Format a date and time
      */
-    function asDateTime($date, $format = 'short'): string {
-        return new Formatter()->asDateTime($date,$format);
+    function asDateTime($date, $format = 'short'): string
+    {
+        return new Formatter()->asDateTime($date, $format);
     }
 }
 
+if (!function_exists('asRelativeTime')) {
+    /**
+     * Format a date and time
+     */
+    function asRelativeTime(mixed $value): string
+    {
+        return Carbon\Carbon::parse($value)->diffForHumans();
+    }
+}
 
 if (!function_exists('t')) {
     function t(
@@ -88,7 +100,8 @@ if (!function_exists('t')) {
 }
 
 if (!function_exists('renderTwig')) {
-    function renderTwig($template, array $data = [], ?TemplateMode $templateMode = null): HtmlString {
+    function renderTwig($template, array $data = [], ?TemplateMode $templateMode = null): HtmlString
+    {
         return new HtmlString(app(TemplateRenderer::class)->renderTemplate($template, $data, $templateMode));
     }
 }
