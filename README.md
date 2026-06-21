@@ -2,15 +2,17 @@
 
 Helper plugin for Craft 6, using Blade templates for rendering.
 
-Coming from Laravel, you may prefer using Blade templates for rendering your views. 
+Coming from Laravel, you may prefer using Blade templates for rendering your views and controllers for preparing your data. 
 
 * Familiar syntax for Laravel developers.
-* Avoid the mental load of switching between Twig and Blade syntax.
-* Use Laravel's component system for reusable UI elements.
+* Avoid the mental load of switching between Twig and PHP syntax.
+* Use Laravel's component system structuring.
 * Leverage Laravel's advanced packages like Livewire and Flux.
 * Reuse existing custom component libraries.
 
 This plugin aims to bring some missing things from Twig to Blade.
+
+This README also includes some general tips and examples for using Blade in Craft.
 
 ## Disclaimer
 
@@ -54,6 +56,18 @@ See `CraftCms\Cms\View\TemplateGlobals::resolve()` for the full list of variable
 
 ## Routing for Craft Entries
 
+Besides calling a template directly, you can also route to a controller action when an entry is requested.
+
+You define how a request for an entry should be handled in the sections site settings, the plugin handles special `route:` and `action` prefixes.
+
+* Template directly: No special prefix, just the template path.
+* Controller action: `route:ClassName:methodName`
+* Route in `routes/web.php`: `action:routeName`
+
+Currently only implemented for top-level entries.
+
+> The controller can of course also render a Twig view if you prefer.
+
 ### Blade view:
 
 This is supported by Craft 6 natively.
@@ -68,7 +82,9 @@ Craft will render the view with an `$entry` variable available.
 
 Enter class name and method in the sections site settings, for example: `route:App\Http\Controllers\DemoController:show`.
 
-In the controller action, you can retrieve the current entry using `MatchedElement::get()` and return a Blade view with any variables, for example:
+The plugin intercepts the request and creates a temporary route, pointing to the specified controller action.
+
+In the action, you can retrieve the current entry using `MatchedElement::get()` and return a Blade view with any variables, for example:
 
 ```php
 <?php
@@ -95,9 +111,13 @@ class DemoController
 
 ### Route in `routes/web.php`
 
-You can also define your own routes in `routes/web.php` and handle everything from there, for example:
+You can also define your own routes in `routes/web.php` and handle everything from there:
 
 This way you can have more control over the route, for example by adding middleware or defining a route name.
+
+Enter your action in the sections site settings, for example: `action:demo/show`.
+
+The plugin intercepts the request and sets the internal route to your configuration, so it will be handled by your custom route definition in `routes/web.php`.
 
 ```php
 Route::get('/actions/demo/show', [DemoController::class, 'show'])
@@ -106,8 +126,6 @@ Route::get('/actions/demo/show', [DemoController::class, 'show'])
 ```
 
 The `actions` prefix must match the `actionTrigger()` setting in your Craft general configuration.
-
-Enter the route in the sections site settings, for example: `action:demo/show`.
 
 ### Manual route
 
@@ -144,7 +162,7 @@ ViewFacade::composer('*', function (View $view) {
 
 For now this plugin does not aim to port all Twig functions and filters to Blade, but here are the ones we came across and how to handle them in Blade (in random order):
 
-### redirect
+### Redirect
 
 Don't use this in your Blade views, instead return a redirect response from your controller action:
 
@@ -185,6 +203,8 @@ Or build your own pagination links with the paginator's methods:
 
 Some convenience methods from Craft's pagination may be missing, but could be added as a macro if required.
 
+> All of this is also available in Twig.
+
 ### Template caching
 
 This is a (mostly AI generated) implementation from [Craft 5](https://github.com/wsydney76/craft5-blade#template-fragment-caching-cache--endcache), based on analyzing compiled templates. 
@@ -206,6 +226,8 @@ Basic usage (no options):
 ```
 
 With options (all keys optional):
+
+> For simplicity, we use a config array instead of Craft's Twig tag syntax, avoiding complex parsing.
 
 ```blade
 @cache([
@@ -243,9 +265,17 @@ Note: Uses Craft's TemplateCaches service under the hood, so (in theory) should 
 
 Cache fragments created via Twig and via Blade are interoperable: if both use the same cache key and are 'global', they refer to the same underlying Craft template cache entry and can be reused interchangeably.
 
-## Helper functions
+### Localization
 
-Most Twig functions and filters can be replaced with PHP/Blade equivalents.
+This is an open issue, we still have to figure out the best way to organize translation files so that they can be used without duplication everywhere.
+
+Both Craft and Laravel provide translation/localization methods, maybe we have to make a choice and use only one consistently.
+
+For now there are some helper functions below.
+
+## More Helper functions
+
+Most Twig functions and filters can be replaced with PHP/Laravel equivalents.
 
 See [Helpers](https://laravel.com/docs/13.x/helpers#main-content) and [String Helpers](https://laravel.com/docs/13.x/strings).
 
@@ -265,8 +295,10 @@ TODO: Check examples if output is correctly escaped.
 - `asDateTime($date, $format = 'short'): string`
 - `asDateTimeLong($date): string`
 - `t(string $text, array $parameters = [], ?string $category = 'site', ?string $locale = null): string`
+- `trans_choice($key, $number, array $replace = [], $locale = null)` :string
 - `renderTwig($template, array $data = [], ?TemplateMode $templateMode = null): HtmlString`
 - `single(string $section): ?Entry`
+
 
 ## Usage in Blade
 
@@ -340,6 +372,20 @@ Uses `CraftCms\Cms\t` function under the hood, just without a namespace.
 {{ t('Read more') }}
 {{ t('Welcome, {name}', ['name' => $currentUser->friendlyName]) }}
 {{ t('My message', [], 'site', 'de-DE') }}
+```
+
+> Craft falls back to Laravel's translation system if it does not find a matching translation.
+
+### `trans_choice`
+
+Translate using pluralization options.
+
+In lang/en-EN/messages.php:
+
+`'apples' => '{0} No apple|{1} One apple|[2,9] Few apples|[10,*] Many apples',`
+
+```twig
+{{ trans_choice('messages.apples', 417) }}
 ```
 
 ### `renderTwig()`
@@ -424,7 +470,7 @@ Experimental.
 
 This plugin provides a `laracraft` Twig variable with some helper methods.
 
-TODO: Naming. We are not the first with this semi-funny idea...
+TODO: Naming. We are not the first with this semi-funny idea... Or drop the Craft variable in favor of global functions.
 
 ```twig
 {{ laracraft.livewire({
@@ -432,7 +478,7 @@ TODO: Naming. We are not the first with this semi-funny idea...
 }) }}
 ```
 
-Some helper functions to load required assets, if not already bundled in your main layout:
+Some helper functions to load required assets, if not already bundled:
 
 ```twig
 {{ laracraft.vite() }}
