@@ -366,7 +366,7 @@ Uses `CraftCms\Cms\Translation\Formatter` under the hood.
 
 Translate a string, using Craft's translation system.
 
-Uses `CraftCms\Cms\t` function under the hood, just without a namespace.
+Uses `CraftCms\Cms\t` function under the hood, with `site` as the default category, which is better suited for frontend templates.
 
 ```blade
 {{ t('Read more') }}
