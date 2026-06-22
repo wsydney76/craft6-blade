@@ -18,6 +18,12 @@ This README also includes some general tips and examples for using Blade in Craf
 
 Craft 6 itself is in alpha, this plugin not even this, so expect a lot of breaking changes, bugs and missing features.
 
+## AI note
+
+The code is handcrafted, (exception: the experimental `@cache` directive).
+
+This README is mostly written by hand, but accepting some AI completions here and there.
+
 ## Installation
 
 Currently, you need to clone this repository into a local directory.
@@ -280,6 +286,8 @@ Most Twig functions and filters can be replaced with PHP/Laravel equivalents.
 See [Helpers](https://laravel.com/docs/13.x/helpers#main-content) and [String Helpers](https://laravel.com/docs/13.x/strings).
 
 Some additional helper functions are provided by this plugin, see below.
+
+> Sometimes, there are subtle differences in behavior between Twig and Laravel functions, so we implemented some custom helper functions to match Twig's behavior more closely. Especially for functions/filters that generate human-readable HTML output, so that the user experience is consistent, regardless of whether the content is rendered in Twig or Blade.
 
 TODO: For now, this uses the global namespace, but could be moved to a custom namespace if needed.
 
