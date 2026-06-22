@@ -2,7 +2,6 @@
 
 use CraftCms\Cms\Entry\Elements\Entry;
 use CraftCms\Cms\Support\Facades\HtmlSanitizers;
-use CraftCms\Cms\Translation\Formatter;
 use CraftCms\Cms\Twig\Extensions\HtmlTwigExtension;
 use CraftCms\Cms\Twig\Extensions\TextTwigExtension;
 use CraftCms\Cms\Twig\TemplateRenderer;
@@ -64,7 +63,7 @@ if (!function_exists('asDate')) {
      */
     function asDate($date, $format = 'short'): string
     {
-        return new Formatter()->asDate($date, $format);
+        return I18N::getFormatter()->asDate($date, $format);
     }
 }
 
@@ -74,7 +73,7 @@ if (!function_exists('asDateTime')) {
      */
     function asDateTime($date, $format = 'short'): string
     {
-        return new Formatter()->asDateTime($date, $format);
+        return I18N::getFormatter()->asDateTime($date, $format);
     }
 }
 
