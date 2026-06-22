@@ -428,6 +428,37 @@ Single entries are not prefetched by Craft, so this helper provides a convenient
 ```
 
 > You can also pass single entries into your views via view composers or controller logic.
+> 
+
+## Handling unported Twig functionality
+
+We do not want to port every single, probably rarely used, Twig function and filter to Blade, you will have to implement some functionality yourself.
+
+See Craft's implementation in `CraftCms\Cms\Twig\Extensions` for reference.
+
+For convenience, we recommend to wrap complex php logic like namespaces etc. in a custom Blade component, so you can keep your main Blade views clean.
+
+Example: Render an address (the Twig `address` filter):
+
+```blade
+<x-address :address="$currentUser->addresses->first()" />
+```
+
+The component:
+
+```blade
+@use(CraftCms\Cms\Address\Addresses)
+
+@props([
+    'address' => null,
+])
+
+@if ($address)
+    {!! app(Addresses::class)->formatAddress($address) !!}
+@endif
+```
+
+> You could also render Twig templates, using the `renderTwig()` helper, if you prefer to keep that logic in Twig.
 
 ## Handling Matrix fields in Blade
 
