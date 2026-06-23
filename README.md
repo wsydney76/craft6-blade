@@ -492,7 +492,7 @@ The component:
     ];
 
     if (is_string($svg)) {
-        $svg = Html::svg(resource_path("/icons/{$svg}.svg"));
+        $svg = resource_path("/icons/{$svg}.svg");
     }
 
     $svg = Html::svg($svg, sanitize: $sanitize);
