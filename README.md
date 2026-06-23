@@ -281,7 +281,7 @@ For now there are some helper functions below.
 
 ## More Helper functions
 
-Most Twig functions and filters can be replaced with PHP/Laravel equivalents.
+Most Twig functions and filters can be replaced with PHP/Laravel equivalents or Craft's API.
 
 See [Helpers](https://laravel.com/docs/13.x/helpers#main-content) and [String Helpers](https://laravel.com/docs/13.x/strings).
 
@@ -372,14 +372,12 @@ Uses `CraftCms\Cms\Translation\Formatter` under the hood.
 
 ### `asRelativeTime()`
 
-Convert a date/time value to a human-readable relative time string (e.g., "5 minutes ago", "in 2 hours").
+Convert a date/time value to a human-readable relative time string (e.g., "5 minutes ago", "9 hours from now").
 
 ```blade
 {{ asRelativeTime($entry->postDate) }}
 {{ asRelativeTime('2026-05-01') }}
 ```
-
-> Note: Craft 5 had a `craft.app.formatter.asRelativeTime()` method, but it seems to be missing in Craft 6, so for now this uses Carbon's `diffForHumans()` method, which may or may not have slight differences in behavior.
 
 ### `t()`
 

@@ -83,7 +83,7 @@ if (!function_exists('asRelativeTime')) {
      */
     function asRelativeTime(mixed $value): string
     {
-        return Carbon\Carbon::parse($value)->diffForHumans();
+        return I18N::getFormatter()->asRelativeTime($value);
     }
 }
 
