@@ -521,9 +521,8 @@ This plugin provides a `laracraft` Twig variable with some helper methods.
 TODO: Naming. We are not the first with this semi-funny idea... Or drop the Craft variable in favor of global functions.
 
 ```twig
-{{ laracraft.livewire({
-    component: 'components::demos.search-twig'
-}) }}
+{{ laracraft.livewire('components::demos.search-twig') }}
+{{ laracraft.livewire('components::demos.search-twig', {query: 'article'}) }}
 ```
 
 Some helper functions to load required assets, if not already bundled:

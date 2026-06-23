@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Throwable;
+use Twig\Markup;
 use function app;
 
 class BladeVariable
@@ -19,13 +20,11 @@ class BladeVariable
         return new HtmlString(view($view, $data)->render());
     }
 
-    // Render the Livewire bootstrap view (includes scripts/styles setup).
-    // Twig: {{ craft.livewire({
-    //        component: 'pages::search'
-    //    }) }}
-    public function livewire(array $data = [])
+
+    public function livewire(string $component, array $data = []): Markup
     {
-        return Template::raw(view('craft6blade::livewire', $data)->render());
+        $arrayString = var_export($data, true);
+        return Template::raw(Blade::render("@livewire('$component', $arrayString)"));
     }
 
     // Output Vite asset tags for the given entry points.
