@@ -289,7 +289,7 @@ Some additional helper functions are provided by this plugin, see below.
 
 > Sometimes, there are subtle differences in behavior between Twig and Laravel functions, so we implemented some custom helper functions to match Twig's behavior more closely. Especially for functions/filters that generate human-readable HTML output, so that the user experience is consistent, regardless of whether the content is rendered in Twig or Blade.
 
-TODO: For now, this uses the global namespace, but could be moved to a custom namespace if needed.
+TODO: For now, this uses the global namespace. Suspect that this is not a good idea, as it may conflict with other packages (it already does for a `svg()` helper for example), but for now we keep it simple. Move to dedicated namespace/function prefix/static helper class???
 
 TODO: Check examples if output is correctly escaped.
 
@@ -436,6 +436,8 @@ See Craft's implementation in `CraftCms\Cms\Twig\Extensions` for reference.
 
 For convenience, we recommend to wrap complex php logic like namespaces etc. in a custom Blade component, so you can keep your main Blade views clean.
 
+> Make sure to sanitize any untrusted input.
+
 Example: Render an address (the Twig `address` filter):
 
 ```blade
@@ -454,6 +456,62 @@ The component:
 @if ($address)
     {!! app(Addresses::class)->formatAddress($address) !!}
 @endif
+```
+
+You can extend this approach to implement more project-specific functionality, like enforcing project standards and formatting, or wrapping complex logic in a Blade component.
+
+Example: Render SVG icons (the Twig `svg` function):
+
+```blade
+@php($asset = Asset::find()->filename('theater.svg')->first())
+<x-svg :svg="$asset" size="lg" class="fill-red-800" />
+<x-svg svg="cog" size="lg" :sanitize="true" />
+```
+
+The component:
+
+```blade
+@php
+    use CraftCms\Cms\Support\Html;
+@endphp
+
+@props([
+    'svg' => null,
+    'class' => null,
+    'size' => null,
+    'sanitize' => null,
+])
+
+@php
+    $sizesLUT = [
+        'xs' => 'size-4',
+        'sm' => 'size-6',
+        'md' => 'size-8',
+        'lg' => 'size-10',
+        'xl' => 'size-12',
+    ];
+
+    if (is_string($svg)) {
+        $svg = Html::svg(resource_path("/icons/{$svg}.svg"));
+    }
+
+    $svg = Html::svg($svg, sanitize: $sanitize);
+
+    if ($class !== null) {
+        $svg = Html::modifyTagAttributes($svg, [
+            'class' => $class,
+        ]);
+    }
+
+    if ($size !== null && isset($sizesLUT[$size])) {
+        $svg = Html::modifyTagAttributes($svg, [
+            'class' => $sizesLUT[$size],
+        ]);
+    }
+@endphp
+
+{!! $svg !!}
+
 ```
 
 > You could also render Twig templates, using the `renderTwig()` helper, if you prefer to keep that logic in Twig.
