@@ -54,9 +54,13 @@ Example: `composer.json`
 
 Run `composer update` to composer-install the plugin and craft-install it via `artisan craft:plugin/install _craft6blade`,
 
+## Configuration
+
+You can configure the plugin in `config/craft/_craft6blade.php`. Copy the plugins example config file from `<vendorPath>/config/_craft6blade.php` to `config/craft/_craft6blade.php` and adjust it to your needs.
+
 ## Official Blade Support
 
-See docs: `https://github.com/craftcms/cms/blob/6.x/docs/blade.md`
+See [docs](https://github.com/craftcms/cms/blob/6.x/docs/blade.md)
 
 Some notes:
 
@@ -81,14 +85,11 @@ This is probably not what you want, at least not for anonymous components.
 * The `components` directory is hardcoded, but you can configure an additional private directory and place your components there, e.g. `resources/views/_components`.
 
 ```php
-// in a Service Provider, e.g. `App\Providers\AppServiceProvider`:
+// in the `config/craft/_craft6blade.php` config file:
 
-use Illuminate\Support\Facades\Blade;
-
-public function boot(): void
-{
-    Blade::anonymousComponentPath(resource_path('views/_components'));
-}
+return [
+     'anonymousComponentPaths' => [resource_path('views/_components')],
+];  
 ```
 
 ### Rendering Twig templates from Blade
@@ -106,7 +107,6 @@ You can render Twig templates from Blade views using the engine agnostic `templa
 ### Directives
 
 Craft itself registers a number of Blade directives, see [docs](https://github.com/craftcms/cms/blob/6.x/docs/blade.md#page-lifecycle) ff.
-
 
 This plugin does not add any directives.
 
@@ -819,9 +819,16 @@ For convenience, you can define Blade customizations in the `config/craft/_craft
 ```php
 return [
     // Shared data for all views
-    // Usage in Blade: {{ $copyright }}
+    // Usage in Blade: {{ $copyright }} or {{ $t('Search') }}
+    // Registering a function in the shared data array just for demonstration,
+    // prefer declaring a 'real' function in a helper file and include it in the 'bladeFunctions' array below.
     'bladeShared' => [
         'copyright' => '© ' . date('Y'),
+        't' => fn(string $text, array $params = []): string => CraftCms\Cms\t(
+            $text,
+            $params,
+            'site',
+        ),
     ],
 
     // Blade directives
@@ -879,6 +886,8 @@ return [
 ```
 
 Note: while this seems convenient, you lose control over when exactly customizations are registered. So this may have a negative impact on performance, e.g. when unnecessary queries are executed.
+
+You could also register your customizations in a service provider, or place custom functions in a dedicated helper file autoloaded by composer.
 
 ## Plugin Integration
 

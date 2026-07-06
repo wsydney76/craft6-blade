@@ -46,6 +46,10 @@ class Plugin extends BasePlugin
             Event::listen(SetRoute::class, HandleSetRoute::class);
         }
 
+        foreach (config('craft._craft6blade.anonymousComponentPaths', []) as $path) {
+            Blade::anonymousComponentPath($path);
+        }
+
         foreach (config('craft._craft6blade.bladeShared', []) as $key => $value) {
             View::share($key, $value);
         }

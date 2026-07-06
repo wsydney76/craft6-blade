@@ -8,6 +8,7 @@
 - Added documentation for replacing default Twig functions/filters/tests.
 - Updated README
 - Support for config-driven Blade customization.
+- Added the `anonymousComponentPaths` configuration option.
 - Added experimental middleware.
 
 ## 2026-06-23
