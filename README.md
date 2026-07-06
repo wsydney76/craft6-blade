@@ -834,10 +834,13 @@ return [
     ],
 
     // Blade echo handlers (stringables)
-    // Usage in Blade: @php($date = new DateTime()) {{ $date }}
+    // Usage in Blade: {{ $entry->price }} // Craft Money field
     'bladeStringables' => [
-        \DateTime::class => function ($dateTime) {
-            return $dateTime->format('Y-m-d H:i');
+        Money\Money::class => function ($money) {
+            if ($money === null) {
+                return null;
+            }
+            return CraftCms\Cms\Support\Money::toString($money);
         },
     ],
 

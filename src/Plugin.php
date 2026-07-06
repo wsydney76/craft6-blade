@@ -33,7 +33,7 @@ class Plugin extends BasePlugin
 
         require_once 'Support/Helpers.php';
 
-        if (config('craft._craft6blade.loadAllHelpers', false)) {
+        if (config('craft._craft6blade.experiments.loadAllHelpers', false)) {
             require_once 'Support/Experiments/ArrayHelpers.php';
             require_once 'Support/Experiments/CoreHelpers.php';
             require_once 'Support/Experiments/DateHelpers.php';
