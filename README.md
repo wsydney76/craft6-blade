@@ -590,7 +590,7 @@ Trim text to a maximum length.
 {{ c6b_truncate($entry->excerpt, 140, '...', false) }}
 ```
 
-> There is a corresponding `limit()` helper in Laravel, which has subtle differences in behavior, so we implemented our own `c6b_truncate()` helper to match Twig's `truncate` filter behavior more closely. <h2>Translation</h2>
+> There is a corresponding `limit()` helper in Laravel, which has subtle differences in behavior, so we implemented our own `c6b_truncate()` helper to match Twig's `truncate` filter behavior more closely.
 
 
 ### `c6b_url()`
