@@ -114,7 +114,7 @@ This plugin does not add any directives.
 
 Besides calling a template directly, you can also route to a controller action when an entry is requested.
 
-You define how a request for an entry should be handled in the sections site settings, the plugin handles special `route:` and `action` prefixes.
+You define how a request for an entry should be handled in the sections site settings, the plugin handles a special `route:` prefix.
 
 * Template directly: No special prefix, just the template path.
 * Controller action: `route:ClassName:methodName` or shortcut (see below).
