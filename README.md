@@ -18,6 +18,8 @@ This README also includes some general tips and examples for using Blade in Craf
 
 Craft 6 itself is in alpha, this plugin not even this, so expect a lot of breaking changes, bugs and missing features.
 
+Feature freeze until Craft 6 beta.
+
 ## AI note
 
 The code is handcrafted.
@@ -30,11 +32,7 @@ Experimental: Optional [helper functions](#experiment-ai-generated-helper-functi
 
 Requires Craft 6 alpha 10.
 
-Currently, you need to clone this repository into a local directory.
-
-TODO: Add installation instructions for installing from GitHub.
-
-Example: `composer.json`
+Adjust `composer.json` to include this:
 
 ```json
 {
@@ -45,8 +43,8 @@ Example: `composer.json`
   },
   "repositories": [
     {
-      "type": "path",
-      "url": "/var/www/plugins/craft6-blade"
+      "type": "vcs",
+      "url": "https://github.com/wsydney76/craft6-blade"
     }
   ]
 }
