@@ -110,9 +110,21 @@ Craft itself registers a number of Blade directives, see [docs](https://github.c
 
 This plugin does not add any directives.
 
-## Routing for Craft Entries
+## Routing for Craft Entries: Take advantage of Controllers
 
-Besides calling a template directly, you can also route to a controller action when an entry is requested.
+Besides better separating application logic from presentation, there are several other use cases where routing through a controller is preferable (for both Twig and Blade):
+
+* Testing: If the database queries live inside Blade, testing becomes awkward because rendering the template is the only way to execute that logic. The controller action is testable, e.g. via `->assertViewHas('entry', fn(Entry $e) => $e->title === 'The Test Entry in English')`
+* Selecting the final template: You can call different templates in different situations, e.g. dedicated templates for each entry type.
+* Content representations: Serve different formats (e.g. JSON, PDF) depending on query params/http headers.
+* Authorization: Use different templates depending on user status, e.g. public content, content for members.
+* Customization: Show different sets of data depending on user preference.
+* Form handling/validation: enable forms (e.g. a feedback form) to be backed by an entry and handle validation/data processing from the controller without extra actions.
+* Performance: Handle caching of reused data
+* Logging: Log user interactions with the entry, e.g. for analytics or debugging.
+* Content model agnostic: Hide implementation details of the content model and complex retrieval logic from the template, e.g.: screening details for a film (date/time, location, ticketing) may be implemented as a matrix field in section film, or as matrix field in section location or as a separate section. The controller can handle the logic and pass the data to the view.
+
+Besides calling a template directly, this plugin enables routing to a controller action when an entry is requested.
 
 You define how a request for an entry should be handled in the sections/matrix fields site settings, the plugin handles a special `route:` prefix.
 
