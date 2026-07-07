@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-07-07
+
+- Added the `setRoute.controllerNamespace` setting.
+- Routing for nested entries in matrix fields is now possible.
+
 ## 2026-07-06
 
 - Reinit git repository.

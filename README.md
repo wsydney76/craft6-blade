@@ -114,12 +114,12 @@ This plugin does not add any directives.
 
 Besides calling a template directly, you can also route to a controller action when an entry is requested.
 
-You define how a request for an entry should be handled in the sections site settings, the plugin handles a special `route:` prefix.
+You define how a request for an entry should be handled in the sections/matrix fields site settings, the plugin handles a special `route:` prefix.
 
 * Template directly: No special prefix, just the template path.
 * Controller action: `route:ClassName:methodName` or shortcut (see below).
 
-Currently only implemented for top-level entries.
+Currently only implemented for entries.
 
 > The controller can of course also render a Twig or Inertia view if you prefer.
 
@@ -127,7 +127,7 @@ Currently only implemented for top-level entries.
 
 This is supported by Craft 6 natively.
 
-In the sections site settings, enter a template path to the Blade view as you would for Twig, but with the `.blade.php` extension. For example: `.../entry.blade.php`.
+In the sections/matrix fields site settings, enter a template path to the Blade view as you would for Twig, but with the `.blade.php` extension. For example: `.../entry.blade.php`.
 
 Craft will render the view with an `$entry` variable available.
 
@@ -135,7 +135,7 @@ Craft will render the view with an `$entry` variable available.
 
 ### Controller action:
 
-Enter class name and method in the sections site settings, for example: `route:App\Http\Controllers\DemoController:show`.
+Enter class name and method in the sections/matrix fields site settings, for example: `route:App\Http\Controllers\DemoController:show`.
 
 The plugin intercepts the request and routes the request to the specified controller action.
 
@@ -166,7 +166,7 @@ class DemoController
 
 ### Shortcut for controller action:
 
-Instead of writing the full `route:ClassName:methodName` string, you can use a shorter `<handle>::<method>` convention in the sections site settings. The plugin recognizes any template value containing `::` as a shortcut.
+Instead of writing the full `route:ClassName:methodName` string, you can use a shorter `<handle>::<method>` convention in the sections/matrix fields site settings. The plugin recognizes any template value containing `::` as a shortcut.
 
 The shortcut expands to a controller action like this:
 
@@ -175,16 +175,16 @@ The shortcut expands to a controller action like this:
 
 Both parts are optional:
 
-* If `<handle>` is omitted, it falls back to the entry's **section handle**.
+* If `<handle>` is omitted, it falls back to the entry's **section handle** or **matrix field handle** .
 * If `<method>` is omitted, it defaults to `show`.
 
 Examples:
 
-| Section Handle | Shortcut      | Controller                              | Method  |
-|----------------|---------------|-----------------------------------------|---------|
-| news           | `::`          | `App\Http\Controllers\NewsController`   | `show`  |
-| news           | `news::show`  | `App\Http\Controllers\NewsController`   | `show`  |
-| newsIndex      | `news::index` | `App\Http\Controllers\NewsController`   | `index` |
+| Section/Field Handle | Shortcut      | Controller                              | Method  |
+|----------------------|---------------|-----------------------------------------|---------|
+| news                 | `::`          | `App\Http\Controllers\NewsController`   | `show`  |
+| news                 | `news::show`  | `App\Http\Controllers\NewsController`   | `show`  |
+| newsIndex            | `news::index` | `App\Http\Controllers\NewsController`   | `index` |
 
 ### Configuring `setRoute` behavior
 
@@ -197,6 +197,7 @@ return [
     // ...
     'setRoute' => [
         'apply' => 'settings', // 'settings', 'never', or 'force'
+        'controllerNamespace' => 'App\\Modules\\Main\\Controllers\\',
         'extra' => [],         // 'queryParam' => defaultValue
     ],
 ];
@@ -206,17 +207,23 @@ return [
 
 Controls whether and how the plugin resolves entry requests to controller actions.
 
-| Value        | Behavior                                                                                                                                                                             |
-|--------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `'settings'` | **Default.** Uses the template value from the section's site settings. |
-| `'force'`    | Ignores the section's template value and always resolves to the `::` shortcut, i.e. `App\Http\Controllers\<Ucfirst(sectionHandle)>Controller@show`.                                  |
-| `'never'`    | Disables the listener entirely. The plugin never intercepts the `SetRoute` event, so Craft's default template routing applies. (Registered in `Plugin.php`: the listener is only bound when `apply` is not `'never'`.)                    |
+| Value        | Behavior                                                                                                                                                                                                               |
+|--------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `'settings'` | **Default.** Uses the template value from the section's or matrix fields site settings.                                                                                                                                |
+| `'force'`    | Ignores the template value and always resolves to the `::` shortcut, i.e. `App\Http\Controllers\<Ucfirst(handle)>Controller@show`.                                                                                     |
+| `'never'`    | Disables the listener entirely. The plugin never intercepts the `SetRoute` event, so Craft's default template routing applies. (Registered in `Plugin.php`: the listener is only bound when `apply` is not `'never'`.) |
 
 You should use `'never'` if you want to handle routing yourself, e.g. with a custom route in `routes/web.php` or a custom event listener. This way you can control the behavior in greater detail, e.g. for multi-level entries or other project-specific routing logic.
 
 Your own event listener can co-exist, e.g. if you want to handle other element types or nested entries in a matrix field.
 
 > Routing is currently only applied to top-level entries.
+
+### `setRoute.controllerNamespace`
+
+Specifies the namespace for the controllers used in the `::` shortcut. The default is `'App\\Http\\Controllers\\'`.
+
+Include the trailing backslash, casing is relevant.
 
 #### `setRoute.extra`
 

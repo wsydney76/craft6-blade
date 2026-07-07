@@ -7,7 +7,6 @@ use CraftCms\Cms\Element\Events\SetRoute;
 use CraftCms\Cms\Entry\Elements\Entry;
 use CraftCms\Cms\Route\ControllerRoute;
 use http\Exception\InvalidArgumentException;
-use function config;
 
 class HandleSetRoute
 {
@@ -15,8 +14,8 @@ class HandleSetRoute
     {
         $element = $event->element;
 
-        // Provisionally only top-level entries
-        if (!($element instanceof Entry) || !$element->section) {
+        // Provisionally only entries
+        if (!($element instanceof Entry)) {
             return;
         }
 
@@ -77,7 +76,8 @@ class HandleSetRoute
         $method = $method ?: 'show';
 
         // Expand to full controller class name
-        $controller = "App\\Http\\Controllers\\" . ucfirst($handle) . "Controller";
+        $controller = config('craft._craft6blade.setRoute.controllerNamespace', "App\\Http\\Controllers\\")
+            . ucfirst($handle) . "Controller";
 
         return [$controller, $method];
     }
@@ -88,7 +88,16 @@ class HandleSetRoute
      */
     protected function getTemplate(ElementInterface $element): ?string
     {
-        return $element->section->getSiteSettings()[$element->siteId]->template ?? null;
+        if ($element instanceof Entry) {
+            if ($element->section) {
+                return $element->section->getSiteSettings()[$element->siteId]->template ?? null;
+            } else {
+                return $element->field->siteSettings[$element->site->uid]['template'] ?? null;
+            }
+        }
+
+        // TODO: handle other element types
+        return null;
     }
 
     /**
@@ -97,6 +106,17 @@ class HandleSetRoute
      */
     protected function getHandle(ElementInterface $element): ?string
     {
-        return $element->section->handle;
+        if ($element instanceof Entry) {
+            if ($element->section) {
+                return $element->section->handle;
+            } else {
+                return $element->field->handle ?? null;
+            }
+        }
+
+        // TODO: handle other element types
+        return null;
+
+
     }
 }
