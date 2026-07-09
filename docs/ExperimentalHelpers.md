@@ -20,8 +20,8 @@ Reference for all helpers in `src/Support/Experiments`, sorted alphabetically by
 | `c6b_beginBody` | Render registered begin-body tags. | `@craftBeginBody`                                                   |
 | `c6b_camel` | Convert a string to camelCase. | `Str::camel(...)`                                                   |
 | `c6b_canCreateDrafts` | Check whether the user can create drafts for an element. | -                                                                   |
-| `c6b_canDelete` | Check whether the user can delete an element. | -                                                                   |
 | `c6b_canDeleteForSite` | Check whether the user can delete an element for the current site. | -                                                                   |
+| `c6b_canDelete` | Check whether the user can delete an element. | -                                                                   |
 | `c6b_canDuplicate` | Check whether the user can duplicate an element. | -                                                                   |
 | `c6b_canSave` | Check whether the user can save an element. | -                                                                   |
 | `c6b_canView` | Check whether the user can view an element. | -                                                                   |
@@ -38,9 +38,9 @@ Reference for all helpers in `src/Support/Experiments`, sorted alphabetically by
 | `c6b_csrfInput` | Render a CSRF input. | `@csrf`                                                             |
 | `c6b_currency` | Format a currency value. | -                                                                   |
 | `c6b_dataUrl` | Generate a data URL for a file or asset. | -                                                                   |
-| `c6b_date` | Format a date value using the I18N formatter. | -                                                                   |
 | `c6b_dateConvert` | Convert a date value to a Carbon instance, optionally applying a timezone. | -                                                                   |
 | `c6b_dateCreate` | Create a DateTimeInterface from a date value. | -                                                                   |
+| `c6b_date` | Format a date value using the I18N formatter. | -                                                                   |
 | `c6b_datetime` | Format a date+time value using the I18N formatter. | -                                                                   |
 | `c6b_dd` | Dump and die. | `@dd(...)`                                                          |
 | `c6b_default` | Returns the value if not empty, otherwise the default. | -                                                                   |
@@ -65,13 +65,13 @@ Reference for all helpers in `src/Support/Experiments`, sorted alphabetically by
 | `c6b_getenv` | Get an environment variable value. | `Env::get()`                                                        |
 | `c6b_gql` | Execute a GraphQL query. | -                                                                   |
 | `c6b_group` | Group an array by a field name or callback. | -                                                                   |
-| `c6b_h` | Render a heading tag (h1-h6). | -                                                                   |
 | `c6b_h1` | Render an h1 heading tag. | -                                                                   |
 | `c6b_h2` | Render an h2 heading tag. | -                                                                   |
 | `c6b_h3` | Render an h3 heading tag. | -                                                                   |
 | `c6b_h4` | Render an h4 heading tag. | -                                                                   |
 | `c6b_h5` | Render an h5 heading tag. | -                                                                   |
 | `c6b_h6` | Render an h6 heading tag. | -                                                                   |
+| `c6b_h` | Render a heading tag (h1-h6). | -                                                                   |
 | `c6b_hash` | Hash or encrypt a string. | `Crypt::encrypt(...)` / `hash(...)`                                 |
 | `c6b_head` | Render registered head tags. | -                                                                   |
 | `c6b_heading` | Alias for c6b_h(). | -                                                                   |
@@ -130,10 +130,10 @@ Reference for all helpers in `src/Support/Experiments`, sorted alphabetically by
 | `c6b_unshift` | Prepend one or more values to the beginning of an array. | -                                                                   |
 | `c6b_url` | Generate a URL. | `{{ url(...) }}`                                                    |
 | `c6b_users` | Create a User element query. | `new UserQuery($config)`                                            |
-| `c6b_uuid` | Generate a UUID v4. | `(string) Str::uuid()`                                              |
 | `c6b_uuid7` | Generate a UUID v7. | `(string) Str::uuid7()`                                             |
+| `c6b_uuid` | Generate a UUID v4. | `(string) Str::uuid()`                                              |
 | `c6b_values` | Return the values of an array (re-indexed). | `array_values($array)`                                              |
 | `c6b_where` | Filter an array by a key/value condition. | `Arr::where($array, $key, $value)`                                  |
 | `c6b_widont` | Prevent widows in a string by replacing the last space with a non-breaking space. | `new HtmlString(Html::widont($string))`                             |
-| `c6b_without` | Return an array without the specified value(s). | `Collection::make($arr)->reject(...)->all()`                        |
 | `c6b_withoutKey` | Return an array without the specified key(s). | -                                                                   |
+| `c6b_without` | Return an array without the specified value(s). | `Collection::make($arr)->reject(...)->all()`                        |
