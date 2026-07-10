@@ -34,29 +34,10 @@ class Plugin extends BasePlugin
     public function bootPlugin(): void
     {
 
-        // Note: We purposely don't rely on Composer autoload for these files.
-        // They define global functions (helpers/filters) which may depend on Craft being initialized.
 
-        switch (config('craft._craft6blade.experiments.loadHelpers')) {
-            case 'published':
-                $path = app_path('c6b/functions.php');
-                if (file_exists($path)) {
-                    require_once $path;
-                }
-                break;
-            case 'all':
-                require_once 'Support/Helpers.php';
-                require_once 'Support/Experiments/ArrayHelpers.php';
-                require_once 'Support/Experiments/CoreHelpers.php';
-                require_once 'Support/Experiments/DateHelpers.php';
-                require_once 'Support/Experiments/HtmlHelpers.php';
-                require_once 'Support/Experiments/TextHelpers.php';
-                break;
-            case 'none':
-                // Do not load any helpers
-                break;
-            default:
-                require_once 'Support/Helpers.php';
+        $path = app_path('c6b/functions.php');
+        if (file_exists($path)) {
+            require_once $path;
         }
 
 

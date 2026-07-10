@@ -28,3 +28,5 @@ function c6b_bladeTextExtension(): TextTwigExtension
     static $textExtension = null;
     return $textExtension ??= new TextTwigExtension();
 }
+
+// ====== END HEADER

@@ -148,9 +148,9 @@ function c6b_attr(array $attributes): \Illuminate\Support\HtmlString
 /**
  * Render registered begin-body tags.
  */
-function c6b_beginBody(): \Illuminate\Support\HtmlString
+function c6b_beginBody(): void
 {
-    return new \Illuminate\Support\HtmlString(app(PageLifecycle::class)->beginBody());
+    app(\CraftCms\Cms\View\PageLifecycle::class)->beginBody();
 }
 // === END c6b_beginBody
 
@@ -543,9 +543,9 @@ function c6b_encodeUrl(string $url): string
 /**
  * Render registered end-body tags.
  */
-function c6b_endBody(): \Illuminate\Support\HtmlString
+function c6b_endBody(): void
 {
-    return new \Illuminate\Support\HtmlString(app(PageLifecycle::class)->endBody());
+    app(\CraftCms\Cms\View\PageLifecycle::class)->endBody();
 }
 // === END c6b_endBody
 
@@ -820,9 +820,9 @@ function c6b_hash(string $data, ?string $algo = null): string
 /**
  * Render registered head tags.
  */
-function c6b_head(): \Illuminate\Support\HtmlString
+function c6b_head(): void
 {
-    return new \Illuminate\Support\HtmlString(app(PageLifecycle::class)->head());
+    app(\CraftCms\Cms\View\PageLifecycle::class)->head();
 }
 // === END c6b_head
 

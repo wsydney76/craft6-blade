@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-07-10
+
+- Refactored how custom helpers are implemented, dropped predefined functions in favor of publishable, project-owned helpers.
+- Updated README for this.
+- Added Roadmap section to README.
+
 ## 2026-07-07
 
 - Added the `setRoute.controllerNamespace` setting.

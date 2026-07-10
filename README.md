@@ -9,6 +9,7 @@ Coming from Laravel, you may prefer using Blade templates for rendering your vie
 * Use Laravel's component system structuring.
 * Leverage Laravel's advanced packages like Livewire and Flux.
 * Reuse existing custom component libraries.
+* Adopt separation of concerns by using an approach backed by controllers and view composers.
 
 This plugin aims to bring some missing things from Twig to Blade.
 
@@ -26,7 +27,7 @@ The code is handcrafted.
 
 This README is mostly written by hand, but accepting some AI completions here and there.
 
-Experimental: Optional [helper functions](#experiment-ai-generated-helper-functions) are AI generated, based on analyzing Craft's Twig extensions.
+Experimental: Optional [helper functions](#helper-functions-1) are AI generated, based on analyzing Craft's Twig extensions.
 
 ## Installation
 
@@ -74,7 +75,7 @@ See [Template Globals](https://github.com/craftcms/cms/blob/6.x/docs/blade.md#te
 
 ### Private/Public Templates
 
-Blade templates follow the same rules as Twig templates, so by default, they are publicly accessible via their path, but not if they are in a subdirectory starting with an underscore `_` (or what is configured in the `privateTemplateTrigger` general config setting).
+Blade templates follow the same rules as Twig templates. By default, they are publicly accessible via their path, but not if they are in a subdirectory starting with an underscore `_` (or what is configured in the `privateTemplateTrigger` general config setting).
 
 This is probably not what you want, at least not for anonymous components.
 
@@ -107,6 +108,11 @@ You can render Twig templates from Blade views using the engine agnostic `templa
 Craft itself registers a number of Blade directives, see [docs](https://github.com/craftcms/cms/blob/6.x/docs/blade.md#page-lifecycle) ff.
 
 This plugin does not add any directives.
+
+
+### Helper functions
+
+Craft extends Twig with a lot of functions, filters and tests. For the time of writing, Craft's Blade support does not provide any equivalents for these, so this plugin ships with experimental, AI generated ports.    
 
 ## Routing for Craft Entries: Take advantage of Controllers
 
@@ -413,9 +419,9 @@ ViewFacade::composer('*', function (View $view) {
 });
 ```
 
-## Porting Twig functions and filters to Blade
+## Random Topics
 
-For now this plugin does not aim to port all Twig functions and filters to Blade, but here are the ones we came across and how to handle them in Blade (in random order):
+Here are some notes about topics we came across and how to handle them in Blade:
 
 ### Redirect
 
@@ -468,23 +474,33 @@ Both Craft and Laravel provide translation/localization methods, maybe we have t
 
 For now there are some helper functions below.
 
-## More Helper functions
+## Helper functions
 
-Most Twig functions and filters can be replaced with PHP/Laravel equivalents or Craft's API.
+> Provisional, there may or may not be official support for equivalents for Craft's Twig functions/filters/test.
 
-See [Helpers](https://laravel.com/docs/13.x/helpers#main-content) and [String Helpers](https://laravel.com/docs/13.x/strings).
+After some experiments with shipping a predefined set of helper functions, we switched to an approach that lets your project own what it needs specifically. 
 
-Some additional helper functions are provided by this plugin, see below.
+Therefore, we prepared a provisional [set of helpers](./docs/PublishFunctions.md) that you can publish to your project and adjust to your needs.
+
+This document also shows how a lot of Twig functions and filters can be replaced with PHP/Laravel equivalents or Craft's API.
+
+These helpers will be registered as global functions, but by default use a c6b_ prefix (c6b_sanitize(), c6b_t(), etc.) as we ran into collisions with other packages. Decided to use a prefix because that seems easer for developers, avoiding the need to import a namespace in templates. The c6b_ prefix makes clear where these functions come from, make it easy to discover via global search/replace, and is supported by IDE syntax completion.
+
+Also see [Helpers](https://laravel.com/docs/13.x/helpers#main-content) and [String Helpers](https://laravel.com/docs/13.x/strings).
+
+For reference, see also the [TwigFunctions.md](docs/TwigFunctions.md) for a comparison of Twig's native functions/filters and their Blade/PHP equivalents.
+
+Most of those functions are AI-generated ports of Craft's twig extensions for now, untested, unreviewed. We will only take a closer look once they are used in real life.
 
 > Sometimes, there are subtle differences in behavior between Twig and Laravel functions, so we implemented some custom helper functions to match Twig's behavior more closely. Especially for functions/filters that generate human-readable HTML output, so that the user experience is consistent, regardless of whether the content is rendered in Twig or Blade.
 
-These helpers are registered as global functions for ergonomic template usage, but now use a `c6b_` prefix (`c6b_sanitize()`, `c6b_t()`, etc.) as we ran into collisions with other packages. Decided to use a prefix because that seems easer for developers, avoiding the need to import a namespace in templates. The `c6b_` prefix makes clear where these functions come from, make it easy to discover via global search/replace, and is suppored by IDE syntax completion.
-
 > Make sure output is correctly escaped or sanitized, that maybe skipped in examples for simplicity.
 
-## Usage in Blade
+### Additional helpers
 
-### `c6b_asDate()` / `c6b_asDateTime()`
+We added/customized some more useful helper functions.
+
+#### `c6b_asDate()` / `c6b_asDateTime()`
 
 Signature: `c6b_asDate($date, $format = 'short'): string`, `c6b_asDateTime($date, $format = 'short'): string`
 
@@ -502,7 +518,7 @@ Uses `CraftCms\Cms\Translation\Formatter` under the hood.
 {{ c6b_asDateTime($entry->postDate, 'long') }}
 ```
 
-### `c6b_asRelativeTime()`
+#### `c6b_asRelativeTime()`
 
 Signature: `c6b_asRelativeTime(mixed $value): string`
 
@@ -513,7 +529,7 @@ Convert a date/time value to a human-readable relative time string (e.g., "5 min
 {{ c6b_asRelativeTime('2026-05-01') }}
 ```
 
-### `c6b_getMatchedElement()`
+#### `c6b_getMatchedElement()`
 
 Signature: `c6b_getMatchedElement(): ?ElementInterface`
 
@@ -525,7 +541,7 @@ On multi-site setups, requires the `ResolveSite` middleware to be applied to the
 $entry = c6b_getMatchedElement();
 ```
 
-### `c6b_md()`
+#### `c6b_md()`
 
 Signature: `c6b_md(string $text, ?string $flavor = null): HtmlString`
 
@@ -544,7 +560,7 @@ You may need to sanitize the output if the Markdown content is user-generated:
 {{ $text |> c6b_md(...) |> c6b_sanitize(...) }}
 ```
 
-### `c6b_sanitize()`
+#### `c6b_sanitize()`
 
 Signature: `c6b_sanitize(HtmlString|string $html): HtmlString`
 
@@ -554,7 +570,7 @@ Sanitize HTML and return safe markup the Craft way.
 {{ c6b_sanitize($entry->body) }}
 ```
 
-### `c6b_single()`
+#### `c6b_single()`
 
 Signature: `c6b_single(string $section): ?Entry`
 
@@ -570,7 +586,7 @@ Single entries are not prefetched by Craft, so this helper provides a convenient
 
 > You can also pass single entries into your views via view composers or controller logic.
 
-### `c6b_t()`
+#### `c6b_t()`
 
 Signature: `c6b_t(string $text, array $parameters = [], ?string $category = 'site', ?string $locale = null): string`
 
@@ -586,17 +602,8 @@ Uses `CraftCms\Cms\t` function under the hood, with `site` as the default catego
 
 > Craft falls back to Laravel's translation system if it does not find a matching translation.
 
-### `c6b_tag()`
 
-Signature: `c6b_tag(string $type, array|string $attributes = ''): HtmlString`
-
-Create an HTML tag string.
-
-```blade
-{{ c6b_tag('h2', 'The Heading') }}
-```
-
-### `c6b_truncate()`
+#### `c6b_truncate()`
 
 Signature: `c6b_truncate(string $string, int $length, string $suffix = '…', bool $splitSingleWord = true): string`
 
@@ -607,28 +614,14 @@ Trim text to a maximum length.
 {{ c6b_truncate($entry->excerpt, 140, '...', false) }}
 ```
 
-> There is a corresponding `limit()` helper in Laravel, which has subtle differences in behavior, so we implemented our own `c6b_truncate()` helper to match Twig's `truncate` filter behavior more closely.
+> There is a corresponding `limit()` helper in Laravel, which has subtle differences in behavior, so keep the `c6b_truncate()` helper to match Twig's `truncate` filter behavior more closely.
 
 
-### `c6b_url()`
+## Handling unported Twig functionality with components
 
-Signature: `c6b_url(string $path = '', array|string $params = [], ?string $scheme = null): string`
-
-Generate a URL.
-
-```blade
-{{ c6b_url($entry->url, ['page' => $newEntries->currentPage() + 1]) }}
-```
-
-Matches Twig's `url()` function.
-
-## Handling unported Twig functionality
-
-We do not want to port every single, probably rarely used, Twig function and filter to Blade, you will have to implement some functionality yourself.
+Instead of relying on helpers, you can wrap complex php logic like namespaces etc. in a custom Blade component, so you can keep your main Blade views clean.
 
 See Craft's implementation in `CraftCms\Cms\Twig\Extensions` for reference.
-
-For convenience, we recommend to wrap complex php logic like namespaces etc. in a custom Blade component, so you can keep your main Blade views clean.
 
 > Make sure to sanitize any untrusted input.
 
@@ -709,32 +702,6 @@ The component:
 ```
 
 > You could also render Twig templates, using the `template()` helper, if you prefer to keep that logic in Twig.
-
-## Experiment: AI generated helper functions
-
-OK, we just said we don't want to port every single Craft-Twig function and filter to Blade, but if you insist:
-
-The plugin ships with a ton of experimental helper functions, generated by AI based on analyzing Craft's Twig extensions for functions/filters.
-
-Add a config file in `config/craft/_craft6blade.php` to enable them:
-
-```php
-<?php
-
-return [
-    'experiments' => [
-        'loadAllHelpers' => true,
-    ],
-];
-```
-
-Untested, untouched, unreviewed, sometimes unnecessary. No human reasoning involved. We (or you for your project) may cherry-pick some of them.
-
-Just the prompt `based on the pattern in Helpers.php c6b_tag: implement the HtmlHelpers.php file that exposes all functions in HtmlTwigExtensions as public functions for Blade, prefixed with c6b_. Repeat for all Twig extensions.`
-
-See [AI-generated helpers](docs/ExperimentalHelpers.md) for the list of helpers.
-
-For reference, see also the [TwigFunctions.md](docs/TwigFunctions.md) for a comparison of Twig's native functions/filters and their Blade/PHP equivalents.
 
 ## Handling Matrix fields in Blade
 
@@ -921,3 +888,12 @@ Plugins that expose functionality via Twig extensions (functions, filters, tags)
 Not the focus of this plugin, but you may find some helper functions useful for passing data to Inertia views.
 
 Craft's `HandleInertiaRequests` middleware is CP specific and hardcodes the Inertia root view, so we've added a simple custom middleware that allows you to use Inertia in the frontend, with a custom root view. Feel free to copy to your app and adjust to your needs.
+
+## Roadmap
+
+Summer break, waiting for Craft 6 Beta.
+
+* Refactor this README into a more usable documentation, splitting plugin usage and general tips/examples.
+* Adjust to Craft's work on Blade support (in case there is any...)
+* Review the `Publishable` library.
+* Implement requests from ongoing client project (planned for 2027 ff).
