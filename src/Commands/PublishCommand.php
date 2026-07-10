@@ -11,7 +11,7 @@ use function app_path;
 use function file_exists;
 use function file_get_contents;
 
-#[Signature('c6b:publish {function : The function to publish} 
+#[Signature('c6b:publish {function? : The function to publish} 
     {--remove : Remove the published function instead of publishing it} 
     {--noPrefix : Publish the function without the c6b_ prefix}')]
 #[Description('Publish a Craft6 Blade function from the plugin\'s Publishables.php to app/c6b/functions.php')]
@@ -22,6 +22,21 @@ class PublishCommand extends Command implements PromptsForMissingInput
     public function handle(): int
     {
         $function = $this->argument('function');
+
+        if (!$function) {
+            $sourcePath = __DIR__ . "/../../Helpers/Publishables.php";
+            $source = file_get_contents($sourcePath);
+            preg_match_all('/^\/\/ === START (c6b_\S+)/m', $source, $matches);
+            $available = array_map(fn($f) => preg_replace('/^c6b_/', '', $f), $matches[1] ?? []);
+
+            if (empty($available)) {
+                $this->components->error("No functions found in Publishables.php.");
+                return self::FAILURE;
+            }
+
+            $function = $this->anticipate('Function name (type or select)', $available);
+        }
+
         if (!str_starts_with($function, 'c6b_')) {
             $function = 'c6b_' . $function;
         }
