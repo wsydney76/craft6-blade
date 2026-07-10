@@ -79,7 +79,7 @@ Blade templates follow the same rules as Twig templates. By default, they are pu
 
 This is probably not what you want, at least not for anonymous components.
 
-* Recommended: use the general config `->privateTemplateTrigger('')` to stop that behavior.
+* Recommended: use the general config `->privateTemplateTrigger('')` to stop that behavior. *)
 * Alternative: use `_` for private directory/filenames.
 * The `components` directory is hardcoded, but you can configure an additional private directory and place your components there, e.g. `resources/views/_components`.
 
@@ -90,6 +90,18 @@ return [
      'anonymousComponentPaths' => [resource_path('views/_components')],
 ];  
 ```
+
+*) In case you want to expose a single directory for direct access, you can register a custom route with a template name as argument.
+
+```php
+Route::get('en/tests/{template}', function (string $template) {
+    return view("tests.{$template}", ['template' => $template]);
+})
+    ->middleware(ResolveSite::class)
+    ->name('en.tests.switch');
+```
+
+For example, a URL like `https://example.com/en/tests/test1` would render the `tests.test1` Blade view in `resources/views/tests/test1.blade.php`.
 
 ### Rendering Twig templates from Blade
 
