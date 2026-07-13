@@ -139,6 +139,7 @@ Besides better separating application logic from presentation, there are several
 * Performance: Handle caching of reused data
 * Logging: Log user interactions with the entry, e.g. for analytics or debugging.
 * Content model agnostic: Hide implementation details of the content model and complex retrieval logic from the template, e.g.: screening details for a film (date/time, location, ticketing) may be implemented as a matrix field in section film, or as matrix field in section location or as a separate section. The controller can handle the logic and pass the data to the view.
+* Register macros or mixins for Blade views.
 
 Besides calling a template directly, this plugin enables routing to a controller action when an entry is requested.
 
@@ -150,6 +151,8 @@ You define how a request for an entry should be handled in the sections/matrix f
 Currently only implemented for entries.
 
 > The controller can of course also render a Twig or Inertia view if you prefer.
+
+> The controller should only handle request/response and prepare data for the view. Delegate complex logic whatever Laravel mechanism fits best, like services, repositories, macros/mixins, model scopes.
 
 ### Blade view:
 
