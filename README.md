@@ -505,6 +505,8 @@ Also see [Helpers](https://laravel.com/docs/13.x/helpers#main-content) and [Stri
 
 For reference, see also the [TwigFunctions.md](docs/TwigFunctions.md) for a comparison of Twig's native functions/filters and their Blade/PHP equivalents.
 
+A limited set of Craft helper functions is available in `vendor/craftcms/src/helpers.php`.
+
 Most of those functions are AI-generated ports of Craft's twig extensions for now, untested, unreviewed. We will only take a closer look once they are used in real life.
 
 > Sometimes, there are subtle differences in behavior between Twig and Laravel functions, so we implemented some custom helper functions to match Twig's behavior more closely. Especially for functions/filters that generate human-readable HTML output, so that the user experience is consistent, regardless of whether the content is rendered in Twig or Blade.
