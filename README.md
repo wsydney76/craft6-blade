@@ -914,7 +914,7 @@ You can speed up thing massively by using [Livewire Blaze](https://github.com/li
 
 Run `composer require livewire/blaze` to install it.
 
-Add the `@blade` directive to the top of your Blade component.
+Add the `@blaze` directive to the top of your Blade component.
 
 Rendering 10.000 components in a loop went from 4000 msec down to 11 msec if `@blaze` is used, and to 2 msec if `@blaze(fold: true)` is used.
 
