@@ -906,6 +906,29 @@ Not the focus of this plugin, but you may find some helper functions useful for 
 
 Craft's `HandleInertiaRequests` middleware is CP specific and hardcodes the Inertia root view, so we've added a simple custom middleware that allows you to use Inertia in the frontend, with a custom root view. Feel free to copy to your app and adjust to your needs.
 
+## Note on performance
+
+In our Craft test project, we found that Blade components render significantly slower than in a pure Laravel project. Most likely this is due to Craft's additional overhead, e.g. adding variables via a view composer.
+
+You can speed up thing massively by using [Livewire Blaze](https://github.com/livewire/blaze), but this comes with some caveats.
+
+Run `composer require livewire/blaze` to install it.
+
+Add the `@blade` directive to the top of your Blade component.
+
+Rendering 10.000 components in a loop went from 4000 msec down to 11 msec if `@blaze` is used, and to 2 msec if `@blaze(fold: true)` is used.
+
+See [Limitations](https://github.com/livewire/blaze#limitations).
+
+The significant Craft related limitation is that no view composers are executed, so none of the variables injected by Craft are available in the component. You have to pass needed values explicitly as props.
+
+```blade
+@php($username = $currentUser->name)
+@for ($i = 0; $i < 10000; $i++)
+    <x-tests.blaze :text="$i" :$username />
+@endfor
+```
+
 ## Roadmap
 
 Summer break, waiting for Craft 6 Beta.
