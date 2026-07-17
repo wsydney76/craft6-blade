@@ -908,7 +908,9 @@ Craft's `HandleInertiaRequests` middleware is CP specific and hardcodes the Iner
 
 ## Note on performance
 
-In our Craft test project, we found that Blade components render significantly slower than in a pure Laravel project. Most likely this is due to Craft's additional overhead, e.g. adding variables via a view composer.
+> A performance issue with rendering Blade anonymous components has been fixed in Craft6 alpha 13. 
+
+Rendering a lot of Blade anonymous components in a loop can be slow.
 
 You can speed up thing massively by using [Livewire Blaze](https://github.com/livewire/blaze), but this comes with some caveats.
 
@@ -918,15 +920,12 @@ Add the `@blaze` directive to the top of your Blade component.
 
 Rendering 10.000 components in a loop (where the component is just a simple `<div>{{ $text }}</div>`, so that we can measure the overhead calling the component):
 
-| Blade component   | Render time | Project                                    |
-|-------------------|-------------|--------------------------------------------|
-| Without Blaze     | 4123 msec   | Craft 6 project                            |
-| Without Blaze     | 303 msec    | Craft 6 project, view composer disabled *) |
-| Without Blaze     | 266 msec    | Laravel project                            |
-| With Blaze        | 11 msec     | Craft 6 project                            |
-| With Blaze (fold) | 2 msec      | Craft 6 project                            |
+| Blade component   | Render time | 
+|-------------------|-------------|
+| Without Blaze     | 81 msec     |
+| With Blaze        | 11 msec     |
+| With Blaze (fold) | 2 msec      |
 
-*) commented out `$this->registerTemplateGlobals();` in `CraftCms\Cms\View\ViewServiceProvider.php`
 
 See [Limitations](https://github.com/livewire/blaze#limitations).
 
@@ -935,9 +934,11 @@ The significant Craft related limitation is that no view composers are executed,
 ```blade
 @php($username = $currentUser->name)
 @for ($i = 0; $i < 10000; $i++)
-    <x-tests.blaze :text="$i" :$username />
+    <x-tests.blaze :text="$i" :username="$username" />
 @endfor
 ```
+
+> Depending on the selected strategy, you may have to run `artisan view:clear` after editing a component/deploy, so that the compiled views are regenerated.
 
 ## Roadmap
 
