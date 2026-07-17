@@ -916,14 +916,17 @@ Run `composer require livewire/blaze` to install it.
 
 Add the `@blaze` directive to the top of your Blade component.
 
-Rendering 10.000 components in a loop:
+Rendering 10.000 components in a loop (where the component is just a simple `<div>{{ $text }}</div>`, so that we can measure the overhead calling the component):
 
-| Blade component   | Render time | Project         |
-|-------------------|-------------|-----------------|
-| Without Blaze     | 4000 msec   | Craft 6 project |
-| Without Blaze     | 266 msec    | Laravel project |
-| With Blaze        | 11 msec     | Craft 6 project |
-| With Blaze (fold) | 2 msec      | Craft 6 project |
+| Blade component   | Render time | Project                                    |
+|-------------------|-------------|--------------------------------------------|
+| Without Blaze     | 4123 msec   | Craft 6 project                            |
+| Without Blaze     | 303 msec    | Craft 6 project, view composer disabled *) |
+| Without Blaze     | 266 msec    | Laravel project                            |
+| With Blaze        | 11 msec     | Craft 6 project                            |
+| With Blaze (fold) | 2 msec      | Craft 6 project                            |
+
+*) commented out `$this->registerTemplateGlobals();` in `CraftCms\Cms\View\ViewServiceProvider.php`
 
 See [Limitations](https://github.com/livewire/blaze#limitations).
 
