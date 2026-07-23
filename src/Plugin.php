@@ -30,8 +30,8 @@ class Plugin extends BasePlugin
         PublishCommand::class,
     ];
 
-    #[Override]
-    public function bootPlugin(): void
+
+    public function boot(): void
     {
 
 

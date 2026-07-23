@@ -4,7 +4,7 @@
   "type": "craft-plugin",
   "require": {
     "php": ">=8.5",
-    "craftcms/cms": "^6.0.0-alpha.10"
+    "craftcms/cms": "^6.0.0-alpha.14"
   },
   "autoload": {
     "psr-4": {
@@ -17,12 +17,7 @@
     "handle": "_craft6blade",
     "name": "Craft 6 Blade",
     "developer": "wsydney76",
-    "class": "wsydney76\\craft6blade\\Plugin",
-    "laravel": {
-      "providers": [
-        "wsydney76\\craft6blade\\Plugin"
-      ]
-    }
+    "class": "wsydney76\\craft6blade\\Plugin"
   },
   "config": {
     "sort-packages": true,

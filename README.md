@@ -31,7 +31,7 @@ Experimental: Optional [helper functions](#helper-functions-1) are AI generated,
 
 ## Installation
 
-Requires Craft 6 alpha 10.
+Requires Craft 6 alpha 14.
 
 Adjust `composer.json` to include this:
 

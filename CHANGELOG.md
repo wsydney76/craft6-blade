@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-07-23
+
+- Requires Craft 6 alpha 14 due to breaking changes for plugins.
+
 ## 2026-07-10
 
 - Refactored how custom helpers are implemented, dropped predefined functions in favor of publishable, project-owned helpers.
