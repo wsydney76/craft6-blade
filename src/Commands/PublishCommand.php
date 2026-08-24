@@ -6,16 +6,16 @@ use CraftCms\Cms\Console\CraftCommand;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Console\PromptsForMissingInput;
 use function app_path;
 use function file_exists;
 use function file_get_contents;
+use function Laravel\Prompts\suggest;
 
 #[Signature('c6b:publish {function? : The function to publish} 
     {--remove : Remove the published function instead of publishing it} 
     {--noPrefix : Publish the function without the c6b_ prefix}')]
 #[Description('Publish a Craft6 Blade function from the plugin\'s Publishables.php to app/c6b/functions.php')]
-class PublishCommand extends Command implements PromptsForMissingInput
+class PublishCommand extends Command
 {
     use CraftCommand;
 
@@ -34,7 +34,18 @@ class PublishCommand extends Command implements PromptsForMissingInput
                 return self::FAILURE;
             }
 
-            $function = $this->anticipate('Function name (type or select)', $available);
+            $function = suggest(
+                'Select a function to publish',
+                $available,
+                required: 'A function name is required.',
+                validate: function($input) use ($available) {
+                    if (!in_array($input, $available)) {
+                        return "Function '$input' is not available. Please select from the list.";
+                    }
+                    return null;
+                },
+                hint: 'Press CRTL+c to cancel.'
+            );
         }
 
         if (!str_starts_with($function, 'c6b_')) {
