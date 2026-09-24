@@ -56,7 +56,8 @@ readonly class CustomGetMatchedElement
 
     private function enforceOfflineAccess(Request $request): void
     {
-        if (app()->isLive() || $request->getHadToken() || $request->siteToken()) {
+        /* app()->isLive() no longer exists */
+        if ($request->getHadToken() || $request->siteToken()) {
             return;
         }
 
