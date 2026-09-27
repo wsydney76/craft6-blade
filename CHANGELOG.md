@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-09-27
+
+- Added the ability to route to an invokable controller.
+- Added Inertia example to the README.
+- Fixed a bug where `app()->isLive()` is no longer available in the `CustomGetMatchedElement` middleware.
+
 ## 2026-07-23
 
 - Requires Craft 6 alpha 14 due to breaking changes for plugins.

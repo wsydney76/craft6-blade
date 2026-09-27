@@ -6,7 +6,8 @@ use CraftCms\Cms\Element\Contracts\ElementInterface;
 use CraftCms\Cms\Element\Events\SetRoute;
 use CraftCms\Cms\Entry\Elements\Entry;
 use CraftCms\Cms\Route\ControllerRoute;
-use http\Exception\InvalidArgumentException;
+use Exception;
+use function str_contains;
 
 class HandleSetRoute
 {
@@ -44,8 +45,11 @@ class HandleSetRoute
             $action = explode(':', $template);
             array_shift($action);
 
-            if (count($action) !== 2) {
-                throw new InvalidArgumentException('Template must have exactly 2 route parts after prefix, separated by colon.');
+            if(count($action) == 1) {
+                $action = $action[0]; // Invokable controller
+            }
+            elseif (count($action) !== 2) {
+                throw new Exception('Template must have no more than 2 route parts after prefix, separated by colon.');
             }
         }
 

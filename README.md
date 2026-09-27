@@ -193,6 +193,42 @@ class DemoController
 
 ```
 
+#### Invokable controller
+
+If your controller has only one action, you can make it [invokable](https://laravel.com/framework/docs/controllers#single-action-controllers) and omit the method name in the route setting, e.g. `route:App\Http\Controllers\PersonController`.
+
+E.g. `route:App\Http\Controllers\PersonController` will call the `__invoke()` method of the `PersonController` class.
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Mixins\PersonMixin;
+use App\Repositories\FilmRepository;
+use CraftCms\Cms\Entry\Elements\Entry;
+use Illuminate\Http\Request;
+
+class PersonController extends Controller
+{
+    public function __construct()
+    {
+        Entry::mixin(new PersonMixin());
+    }
+    /**
+     * Handle the incoming request.
+     */
+    public function __invoke(Request $request, Entry $entry, FilmRepository $filmRepository)
+    {
+        return view('_entries/person/show', [
+            'entry' => $entry,
+            'films' => $filmRepository->getFilmsForPerson($entry),
+        ]);
+    }
+}
+
+```
+
 > Craft will only call the controller action if a matching live entry is found, so you don't need to worry about 404 handling in your controller.
 
 ### Shortcut for controller action:
@@ -905,6 +941,72 @@ Plugins that expose functionality via Twig extensions (functions, filters, tags)
 Not the focus of this plugin, but you may find some helper functions useful for passing data to Inertia views.
 
 Craft's `HandleInertiaRequests` middleware is CP specific and hardcodes the Inertia root view, so we've added a simple custom middleware that allows you to use Inertia in the frontend, with a custom root view. Feel free to copy to your app and adjust to your needs.
+
+You can set up Inertia routes in `routes/web.php` and use Inertia's `Inertia::render()` method in your controller actions.
+
+```php
+Route::get('{site}/inertia/article/{slug}', [InertiaArticleController::class, 'show'])
+    ->middleware([ResolveSite::class, HandleInertiaRequests::class])
+    ->name('inertia.article.show');
+```
+
+If you want to use this plugin's entry routing, e.g. `route:App\Http\Controllers\ArticleInertiaController:show' in a plugins settings, your controller has to handle inserting middleware actions, e.g. to configure the Inertia root view.
+
+Not completely figured out yet how to do this, but as a starting point:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Middleware\HandleInertiaRequests;
+use CraftCms\Cms\Entry\Elements\Entry;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Inertia\Inertia;
+use Inertia\Response;
+use function CraftCms\Cms\t;
+
+class ArticleInertiaController extends Controller implements HasMiddleware
+{
+    public static function middleware()
+    {
+        // This is never called
+        return [new Middleware(HandleInertiaRequests::class)];
+    }
+
+    public function show(Entry $entry, Request $request): Response
+    {
+        /* TODO: Middleware is not invoked in Craft routes set via SetRoute event (bug, intended, setup error on our side??)  */
+        /* So using workaround here */
+
+        $this->initInertia($request);
+
+        return Inertia::render('Article/Show', [
+            'entry' => $entry->detailsToArray(),
+            'backUrl' => route('inertia.article', ['site' => $entry->site->handle]),
+            'translations' => [
+                'Back to search' => t('Back to search', [], 'site'),
+            ],
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return void
+     */
+    protected function initInertia(Request $request): void
+    {
+        $middleware = new HandleInertiaRequests();
+
+        Inertia::setRootView($middleware->rootView($request));
+        Inertia::version($middleware->version($request));
+        Inertia::share($middleware->share($request));
+    }
+}
+
+```
 
 ## Note on performance
 
