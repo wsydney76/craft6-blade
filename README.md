@@ -950,7 +950,7 @@ Route::get('{site}/inertia/article/{slug}', [InertiaArticleController::class, 's
     ->name('inertia.article.show');
 ```
 
-If you want to use this plugin's entry routing, e.g. `route:App\Http\Controllers\ArticleInertiaController:show' in a plugins settings, your controller has to handle inserting middleware actions, e.g. to configure the Inertia root view.
+If you want to use this plugin's entry routing, e.g. `route:App\Http\Controllers\ArticleInertiaController:show' in section settings, your controller has to handle inserting middleware actions, e.g. to configure the Inertia root view.
 
 Not completely figured out yet how to do this, but as a starting point:
 
